@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
 
 // Arrivals test route
 const GtfsRealtimeBindings = require("gtfs-realtime-bindings");
-const fetch = require("node-fetch");
+
 
 const MTA_FEED = "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs";
 const API_KEY = process.env.MTA_API_KEY;
