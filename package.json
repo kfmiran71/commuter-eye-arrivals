@@ -8,6 +8,8 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "gtfs-realtime-bindings": "^1.1.1"
-  }
+    "gtfs-realtime-bindings": "^1.1.1",
+    "node-fetch": "^2.6.7"
 }
+  }
+
