@@ -1,23 +1,22 @@
 const express = require("express");
 const GtfsRealtimeBindings = require("gtfs-realtime-bindings");
 const fs = require("fs");
-
 const stopsData = fs.readFileSync("stops.txt", "utf8");
 const STATION_NAMES = {};
 
 stopsData.split("\n").slice(1).forEach(line => {
   const cols = line.split(",");
   const stopId = cols[0];
-  const stopName = cols[2];
+  const stopName = cols[1];
 
   if (stopId && stopName) {
     STATION_NAMES[stopId] = stopName;
   }
 });
-
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = 8080;
 
+// MTA ACE feed (A/C/E trains)
 const FEEDS = [
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace",
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm",
@@ -25,8 +24,9 @@ const FEEDS = [
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-nqrw",
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-jz",
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-l",
-  "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g"
+  "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g",
 ];
+
 
 function getMinutesUntil(timestamp) {
   const now = Date.now();
@@ -38,20 +38,28 @@ async function fetchFeeds() {
   const feeds = [];
 
   for (const url of FEEDS) {
-    try {
-      const response = await fetch(url);
-      const buffer = Buffer.from(await response.arrayBuffer());
-      const feed = GtfsRealtimeBindings.transit_realtime.FeedMessage.decode(buffer);
-      feeds.push(feed);
-    } catch {
-      console.log("⚠️ Skipping bad feed:", url);
-    }
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "*/*"
+      }
+    });
+
+    const buffer = Buffer.from(await response.arrayBuffer());
+
+    const feed = GtfsRealtimeBindings.transit_realtime.FeedMessage.decode(buffer);
+
+    feeds.push(feed);
+
+  } catch (err) {
+    console.log("⚠️ Skipping bad feed:", url);
   }
+}
 
   return feeds;
 }
-
-function extractArrivals(feed, stopId) {
+function extractArrivals(feed, stopId, direction) {
   const arrivals = [];
 
   for (const entity of feed.entity) {
@@ -61,6 +69,7 @@ function extractArrivals(feed, stopId) {
 
     for (const stopTime of entity.tripUpdate.stopTimeUpdate || []) {
       if (stopTime.stopId === stopId) {
+
         const time =
           stopTime.arrival?.time || stopTime.departure?.time;
 
@@ -75,20 +84,32 @@ function extractArrivals(feed, stopId) {
     }
   }
 
-  return arrivals;
+  // remove duplicates + sort
+  const unique = [];
+  const seen = new Set();
+
+  for (const a of arrivals.sort((a, b) => a.time - b.time)) {
+    const key = `${a.route}-${a.time}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      unique.push(a);
+    }
+  }
+
+  return unique.slice(0, 8);
 }
 
 app.get("/arrivals", async (req, res) => {
   try {
     const stopId = req.query.stop;
+const baseStop = stopId.slice(0, -1);
+const directionCode = stopId.slice(-1);
+const direction = directionCode === "N" ? "Uptown" : "Downtown";
+const baseStation = stopId.slice(0, -1);
 
     if (!stopId) {
       return res.status(400).json({ error: "Missing stop parameter" });
     }
-
-    const baseStop = stopId.slice(0, -1);
-    const directionCode = stopId.slice(-1);
-    const direction = directionCode === "N" ? "Uptown" : "Downtown";
 
     const feeds = await fetchFeeds();
 
@@ -98,8 +119,8 @@ app.get("/arrivals", async (req, res) => {
       arrivals = arrivals.concat(extractArrivals(feed, stopId));
     }
 
+    // GROUP BY ROUTE
     const grouped = {};
-
     for (const a of arrivals) {
       if (!grouped[a.route]) {
         grouped[a.route] = [];
@@ -107,43 +128,57 @@ app.get("/arrivals", async (req, res) => {
       grouped[a.route].push(a.time);
     }
 
-    for (const route in grouped) {
-      const times = grouped[route].sort((a, b) => a - b);
+    // SMART FILTERING (IMPROVED)
+for (const route in grouped) {
+  const times = grouped[route].sort((a, b) => a - b);
 
-      const under30 = times.filter(t => t <= 30);
-      const over30 = times.filter(t => t > 30);
+  const under30 = times.filter(t => t <= 30);
+  const over30 = times.filter(t => t > 30);
 
-      let final = [];
+  let final = [];
 
-      if (under30.length >= 3) {
-        final = under30.slice(0, 3);
-      } else if (under30.length >= 1) {
-        final = [...under30, ...over30.slice(0, 1)];
-      } else {
-        final = over30.slice(0, 2);
-      }
+  if (under30.length >= 3) {
+    // best case → only show close trains
+    final = under30.slice(0, 3);
 
-      grouped[route] = final;
-    }
+  } else if (under30.length === 2) {
+    // allow 1 far train
+    final = [...under30, ...over30.slice(0, 1)];
 
-    const stationName = STATION_NAMES[baseStop] || baseStop;
+  } else if (under30.length === 1) {
+    // allow 1 far train only
+    final = [...under30, ...over30.slice(0, 1)];
 
-    const trains = Object.entries(grouped).map(([route, times]) => ({
-      route,
-      times
-    }));
+  } else {
+    // no close trains → show 2 soonest overall
+    final = over30.slice(0, 2);
+  }
 
-    res.json({
-      station: stationName,
-      direction,
-      trains
-    });
+  grouped[route] = final;
+}
 
+    const stationName = STATION_NAMES[stopId] || stopId;
+
+// convert grouped object → display array
+const formatted = Object.entries(grouped).map(([route, times]) => ({
+  route,
+  times
+}));
+
+res.json({
+  station: stationName,
+  direction,
+  trains: formatted.map(({ route, times }) => ({
+    route,
+    times
+  }))
+});
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      error: err.message
+    });
   }
 });
-
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
