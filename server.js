@@ -77,10 +77,8 @@ function extractArrivals(feed, stopId, direction) {
 
         const minutes = getMinutesUntil(time);
 
-        if (minutes >= -1) {
-  arrivals.push({ route, time: Math.max(0, minutes) });
-}
-          
+        if (minutes > 0) {
+          arrivals.push({ route, time: minutes });         
         }
       }
     }
