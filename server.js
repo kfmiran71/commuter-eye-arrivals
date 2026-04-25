@@ -80,7 +80,7 @@ function extractArrivals(feed, stopId, direction) {
         if (minutes >= -1) {
   arrivals.push({ route, time: Math.max(0, minutes) });
 }
-          arrivals.push({ route, time: minutes });
+          
         }
       }
     }
