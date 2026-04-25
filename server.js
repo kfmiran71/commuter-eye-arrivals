@@ -137,22 +137,14 @@ for (const route in grouped) {
 
   let final = [];
 
-  if (under30.length >= 3) {
-    // best case → only show close trains
-    final = under30.slice(0, 3);
-
-  } else if (under30.length === 2) {
-    // allow 1 far train
-    final = [...under30, ...over30.slice(0, 1)];
-
-  } else if (under30.length === 1) {
-    // allow 1 far train only
-    final = [...under30, ...over30.slice(0, 1)];
-
-  } else {
-    // no close trains → show 2 soonest overall
-    final = over30.slice(0, 2);
-  }
+if (under30.length >= 2) {
+  final = under30.slice(0, 2);
+} else if (under30.length === 1) {
+  final = [...under30, ...over30.slice(0, 1)];
+} else {
+  final = over30.slice(0, 2);
+}
+  
 
   grouped[route] = final;
 }
