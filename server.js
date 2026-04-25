@@ -157,10 +157,17 @@ if (under30.length >= 3) {
     const stationName = STATION_NAMES[stopId] || stopId;
 
 // convert grouped object → display array
-const formatted = Object.entries(grouped).map(([route, times]) => ({
-  route,
-  times: times.map(t => t === 0 ? "Now" : t + " min")
-}));
+const formatted = Object.entries(grouped)
+  .map(([route, times]) => ({
+    route,
+    rawTimes: times,
+    times: times.map(t => t === 0 ? "Now" : t + " min")
+  }))
+  .sort((a, b) => a.rawTimes[0] - b.rawTimes[0])
+  .map(({ route, times }) => ({
+    route,
+    times
+  }));
 
 res.json({
   station: stationName,
