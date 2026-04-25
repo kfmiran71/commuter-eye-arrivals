@@ -162,7 +162,7 @@ for (const route in grouped) {
 // convert grouped object → display array
 const formatted = Object.entries(grouped).map(([route, times]) => ({
   route,
-  times
+  times: times.map(t => t === 0 ? "Now" : t + " min")
 }));
 
 res.json({
