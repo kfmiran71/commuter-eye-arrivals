@@ -15,7 +15,12 @@ stopsData.split("\n").slice(1).forEach(line => {
 });
 const app = express();
 const PORT = 8080;
-
+function getBullet(route) {
+  if (route === "1" || route === "2" || route === "3") return "🔴";
+  if (route === "4" || route === "5" || route === "6") return "🟢";
+  if (route === "A" || route === "C" || route === "E") return "🔵";
+  return "⚪";
+}
 // MTA ACE feed (A/C/E trains)
 const FEEDS = [
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace",
@@ -177,12 +182,23 @@ const result = formatted.map(({ route, times }) => ({
   times: times.join(" · ")
 }));
 
-res.json(result);
+const display = formatted
+  .map(({ route, times }) => {
+    return `${getBullet(route)} ${route}   ${times.join(" · ")}`;
+  })
+  .join("\n");
+
+res.json({
+  platform_id: stopId,
+  station: stationName,
+  direction,
+  display
+});
   } catch (err) {
-    res.status(500).json({
-      error: err.message
-    });
-  }
+  res.status(500).json({
+    error: err.message
+  });
+}
 });
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
