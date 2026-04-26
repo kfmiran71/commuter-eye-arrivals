@@ -184,7 +184,7 @@ const result = formatted.map(({ route, times }) => ({
 
 const display = formatted
   .map(({ route, times }) => {
-    return `${getBullet(route)} ${route}   ${times.join(" · ")}`;
+    return `${route}   ${times.join(" · ")}`;
   })
   .join("\n");
 
