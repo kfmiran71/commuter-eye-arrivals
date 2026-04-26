@@ -169,14 +169,15 @@ const formatted = Object.entries(grouped)
     times
   }));
 
-res.json({
+const result = formatted.map(({ route, times }) => ({
+  platform_id: stopId,
   station: stationName,
   direction,
-  trains: formatted.map(({ route, times }) => ({
-    route,
-    times
-  }))
-});
+  route,
+  times: times.join(" · ")
+}));
+
+res.json(result);
   } catch (err) {
     res.status(500).json({
       error: err.message
