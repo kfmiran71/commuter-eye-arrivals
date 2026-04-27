@@ -186,7 +186,12 @@ const flat = formatted
   )
   .sort((a, b) => a.raw - b.raw)
   .map(({ raw, ...rest }) => rest);
-res.json(flat);
+res.json({
+  platform_id: stopId,
+  station: stationName,
+  direction,
+  trains: formatted
+});
   } catch (err) {
   res.status(500).json({
     error: err.message
