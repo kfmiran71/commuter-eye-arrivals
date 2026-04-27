@@ -188,16 +188,19 @@ const display = formatted
   })
   .join("\n");
 
-const flat = formatted.flatMap(({ route, times }) =>
-  times.map(time => ({
-    platform_id: stopId,
-    station: stationName,
-    direction,
-    route,
-    time
-  }))
-);
-
+const flat = formatted
+  .flatMap(({ route, times }) =>
+    times.map(time => ({
+      platform_id: stopId,
+      station: stationName,
+      direction,
+      route,
+      time,
+      raw: parseInt(time)
+    }))
+  )
+  .sort((a, b) => a.raw - b.raw)
+  .map(({ raw, ...rest }) => rest);
 res.json(flat);
   } catch (err) {
   res.status(500).json({
