@@ -188,12 +188,17 @@ const display = formatted
   })
   .join("\n");
 
-res.json({
-  platform_id: stopId,
-  station: stationName,
-  direction,
-  display
-});
+const flat = formatted.flatMap(({ route, times }) =>
+  times.map(time => ({
+    platform_id: stopId,
+    station: stationName,
+    direction,
+    route,
+    time
+  }))
+);
+
+res.json(flat);
   } catch (err) {
   res.status(500).json({
     error: err.message
