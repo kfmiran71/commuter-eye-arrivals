@@ -137,23 +137,8 @@ const baseStation = stopId.slice(0, -1);
 for (const route in grouped) {
   const times = grouped[route].sort((a, b) => a - b);
 
-  const under30 = times.filter(t => t <= 30);
-  const over30 = times.filter(t => t > 30);
-
-  let final = [];
-
-if (under30.length >= 3) {
-  final = under30.slice(0, 3);
-
-} else if (under30.length === 2) {
-  final = [...under30, ...over30.slice(0, 1)];
-
-} else if (under30.length === 1) {
-  final = [...under30, ...over30.slice(0, 1)];
-
-} else {
-  final = over30.slice(0, 2);
-}
+  const sorted = times.sort((a, b) => a - b);
+const final = sorted.slice(0, 3);
   
 
   grouped[route] = final;
