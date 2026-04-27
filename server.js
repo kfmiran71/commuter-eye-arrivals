@@ -101,7 +101,7 @@ function extractArrivals(feed, stopId, direction) {
     }
   }
 
-  return unique.slice(0, 8);
+  return unique;
 }
 
 app.get("/arrivals", async (req, res) => {
