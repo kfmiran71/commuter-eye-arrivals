@@ -161,12 +161,13 @@ const formatted = Object.entries(grouped)
 };
   })
   .sort((a, b) => a.rawTimes[0] - b.rawTimes[0])
-  .map(({ route, time1, time2, time3 }) => ({
-    route,
-    time1,
-    time2,
-    time3
-  }));
+  .map(({ route, time1, time2, time3, times_text }) => ({
+  route,
+  time1,
+  time2,
+  time3,
+  times_text
+}));
 
 
 
