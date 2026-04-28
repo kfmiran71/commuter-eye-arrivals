@@ -147,31 +147,26 @@ const final = sorted.slice(0, 3);
     const stationName = STATION_NAMES[stopId] || stopId;
 
 // convert grouped object → display array
-const formatted = Object.entries(grouped)
-  .map(([route, times]) => {
-    const cleaned = (times || []).map(t => t === 0 ? "Now" : t + " min");
+const routeId = req.query.route;
 
-    return {
-  route,
-  rawTimes: times
+const times = (grouped[routeId] || [])
+  .sort((a, b) => a - b)
+  .slice(0, 3);
+
+const cleaned = times.map(t => t === 0 ? "Now" : t + " min");
+
+const result = {
+  route: routeId,
+  time1: cleaned[0] || null,
+  time2: cleaned[1] || null,
+  time3: cleaned[2] || null,
+  times_text: cleaned.join(" • ")
 };
-  })
-  .sort((a, b) => (a.rawTimes?.[0] || 9999) - (b.rawTimes?.[0] || 9999))
-  .map(({ route, rawTimes }) => ({
-  route,
-times: (rawTimes || []).map(t => t === 0 ? "Now" : t + " min")
-}));
 
 
 
 
-
-res.json({
-  platform_id: stopId,
-  station: stationName,
-  direction,
-  trains: formatted
-});
+res.json(result);
   } catch (err) {
   res.status(500).json({
     error: err.message
