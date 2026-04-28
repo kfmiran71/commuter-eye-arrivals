@@ -153,11 +153,7 @@ const formatted = Object.entries(grouped)
 
     return {
   route,
-  rawTimes: times,
-  time1: cleaned[0] || null,
-  time2: cleaned[1] || null,
-  time3: cleaned[2] || null,
-  times_text: cleaned.join(" • ")
+  times: cleaned
 };
   })
   .sort((a, b) => a.rawTimes[0] - b.rawTimes[0])
