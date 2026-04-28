@@ -107,6 +107,7 @@ function extractArrivals(feed, stopId, direction) {
 app.get("/arrivals", async (req, res) => {
   try {
     const stopId = req.query.stop;
+    const selectedRoute = req.query.route;
 const baseStop = stopId.slice(0, -1);
 const directionCode = stopId.slice(-1);
 const direction = directionCode === "N" ? "Uptown" : "Downtown";
@@ -124,16 +125,21 @@ const baseStation = stopId.slice(0, -1);
       arrivals = arrivals.concat(extractArrivals(feed, stopId));
     }
 
-    // GROUP BY ROUTE
+    
     const grouped = {};
-    for (const a of arrivals) {
-      if (!grouped[a.route]) {
-        grouped[a.route] = [];
-      }
-      grouped[a.route].push(a.time);
-    }
+   for (const a of arrivals) {
 
-    // SMART FILTERING (IMPROVED)
+  
+  if (selectedRoute && a.route !== selectedRoute) continue;
+
+  if (!grouped[a.route]) {
+    grouped[a.route] = [];
+  }
+
+  grouped[a.route].push(a.time);
+}
+
+    
 for (const route in grouped) {
   const times = grouped[route].sort((a, b) => a - b);
 
