@@ -152,12 +152,13 @@ const formatted = Object.entries(grouped)
     const cleaned = times.map(t => t === 0 ? "Now" : t + " min");
 
     return {
-      route,
-      rawTimes: times,
-      time1: cleaned[0] || null,
-      time2: cleaned[1] || null,
-      time3: cleaned[2] || null
-    };
+  route,
+  rawTimes: times,
+  time1: cleaned[0] || null,
+  time2: cleaned[1] || null,
+  time3: cleaned[2] || null,
+  times_text: cleaned.join(" • ")
+};
   })
   .sort((a, b) => a.rawTimes[0] - b.rawTimes[0])
   .map(({ route, time1, time2, time3 }) => ({
