@@ -166,7 +166,25 @@ const result = {
 
 
 
-res.json(result);
+res.json({
+  platform_id: stopId,
+  station: stationName,
+  direction,
+  trains: Object.entries(grouped).map(([route, times]) => {
+    const cleaned = (times || [])
+      .sort((a, b) => a - b)
+      .slice(0, 3)
+      .map(t => t === 0 ? "Now" : t + " min");
+
+    return {
+      route,
+      time1: cleaned[0] || null,
+      time2: cleaned[1] || null,
+      time3: cleaned[2] || null,
+      times_text: cleaned.join(" • ")
+    };
+  })
+});
   } catch (err) {
   res.status(500).json({
     error: err.message
