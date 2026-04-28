@@ -148,44 +148,29 @@ const final = sorted.slice(0, 3);
 
 // convert grouped object → display array
 const formatted = Object.entries(grouped)
-  .map(([route, times]) => ({
-    route,
-    rawTimes: times,
-    times: times.map(t => t === 0 ? "Now" : t + " min")
-  }))
+  .map(([route, times]) => {
+    const cleaned = times.map(t => t === 0 ? "Now" : t + " min");
+
+    return {
+      route,
+      rawTimes: times,
+      time1: cleaned[0] || null,
+      time2: cleaned[1] || null,
+      time3: cleaned[2] || null
+    };
+  })
   .sort((a, b) => a.rawTimes[0] - b.rawTimes[0])
-  .map(({ route, times }) => ({
+  .map(({ route, time1, time2, time3 }) => ({
     route,
-    times
+    time1,
+    time2,
+    time3
   }));
 
-const result = formatted.map(({ route, times }) => ({
-  platform_id: stopId,
-  station: stationName,
-  direction,
-  route,
-  times: times.join(" · ")
-}));
 
-const display = formatted
-  .map(({ route, times }) => {
-    return `${route}   ${times.join(" · ")}`;
-  })
-  .join("\n");
 
-const flat = formatted
-  .flatMap(({ route, times }) =>
-    times.map(time => ({
-      platform_id: stopId,
-      station: stationName,
-      direction,
-      route,
-      time,
-      raw: parseInt(time)
-    }))
-  )
-  .sort((a, b) => a.raw - b.raw)
-  .map(({ raw, ...rest }) => rest);
+
+
 res.json({
   platform_id: stopId,
   station: stationName,
