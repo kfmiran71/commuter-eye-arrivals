@@ -156,13 +156,10 @@ const formatted = Object.entries(grouped)
   times: cleaned
 };
   })
-  .sort((a, b) => a.rawTimes[0] - b.rawTimes[0])
-  .map(({ route, time1, time2, time3, times_text }) => ({
+  .sort((a, b) => (a.rawTimes?.[0] || 9999) - (b.rawTimes?.[0] || 9999))
+  .map(({ route, rawTimes }) => ({
   route,
-  time1,
-  time2,
-  time3,
-  times_text
+times: (rawTimes || []).map(t => t === 0 ? "Now" : t + " min")
 }));
 
 
