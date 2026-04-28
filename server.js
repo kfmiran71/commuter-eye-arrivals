@@ -153,7 +153,7 @@ const formatted = Object.entries(grouped)
 
     return {
   route,
-  times: cleaned
+  rawTimes: times
 };
   })
   .sort((a, b) => (a.rawTimes?.[0] || 9999) - (b.rawTimes?.[0] || 9999))
