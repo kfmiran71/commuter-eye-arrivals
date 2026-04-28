@@ -171,12 +171,7 @@ const formatted = Object.entries(grouped)
 
 
 
-res.json({
-  platform_id: stopId,
-  station: stationName,
-  direction,
-  trains: formatted
-});
+res.json(formatted);
   } catch (err) {
   res.status(500).json({
     error: err.message
