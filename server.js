@@ -21,7 +21,7 @@ function getBullet(route) {
   if (route === "A" || route === "C" || route === "E") return "🔵";
   return "⚪";
 }
-// MTA ACE feed (A/C/E trains)
+
 const FEEDS = [
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-ace",
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-bdfm",
@@ -89,7 +89,7 @@ function extractArrivals(feed, stopId, direction) {
     }
   }
 
-  // remove duplicates + sort
+  
   const unique = [];
   const seen = new Set();
 
@@ -152,7 +152,7 @@ const final = sorted.slice(0, 3);
 
     const stationName = STATION_NAMES[stopId] || stopId;
 
-// convert grouped object → display array
+
 const routeId = req.query.route;
 
 const times = (grouped[routeId] || [])
@@ -184,10 +184,7 @@ res.json({
 
     return {
       route,
-      time1: cleaned[0] || null,
-      time2: cleaned[1] || null,
-      time3: cleaned[2] || null,
-      times_text: cleaned.join(" • ")
+      times: cleaned
     };
   })
 });
