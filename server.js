@@ -149,7 +149,7 @@ const final = sorted.slice(0, 3);
 // convert grouped object → display array
 const formatted = Object.entries(grouped)
   .map(([route, times]) => {
-    const cleaned = times.map(t => t === 0 ? "Now" : t + " min");
+    const cleaned = (times || []).map(t => t === 0 ? "Now" : t + " min");
 
     return {
   route,
