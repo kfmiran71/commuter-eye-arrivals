@@ -227,21 +227,24 @@ app.get("/arrivals-flat", async (req, res) => {
 
     const stationName = STATION_NAMES[stopId] || stopId;
 
-    const flat = Object.entries(grouped).map(([route, times]) => {
-      const cleaned = (times || [])
-        .sort((a, b) => a - b)
-        .slice(0, 3)
-        .map(t => t === 0 ? "Now" : t + " min");
+    const flat = Object.entries(grouped)
+  .map(([route, times]) => {
+    const sorted = (times || [])
+      .sort((a, b) => a - b)
+      .slice(0, 3);
 
-      return {
-        platform_id: stopId,
-        station: stationName,
-        direction,
-        route,
-        route_icon: `${getBullet(route)} ${route}`,
-        times: cleaned.join(" · ")
-      };
-    });
+    const cleaned = sorted.map(t => t === 0 ? "Now" : t + " min");
+
+    return {
+      platform_id: stopId,
+      station: stationName,
+      direction,
+      route,
+      first_arrival: sorted[0] ?? null,
+      times: cleaned.join(" · ")
+    };
+  })
+  .sort((a, b) => (a.first_arrival ?? 9999) - (b.first_arrival ?? 9999));
 
     res.json(flat);
   } catch (err) {
