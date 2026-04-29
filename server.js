@@ -235,14 +235,13 @@ app.get("/arrivals-flat", async (req, res) => {
 
     const cleaned = sorted.map(t => t === 0 ? "Now" : t + " min");
 
-    return {
-      platform_id: stopId,
-      station: stationName,
-      direction,
-      route,
-      first_arrival: sorted[0] ?? null,
-      times: cleaned.join(" · ")
-    };
+   return {
+  platform_id: stopId,
+  station: stationName,
+  direction,
+  route,
+  times: cleaned.join(" · ")
+};
   })
   .sort((a, b) => (a.first_arrival ?? 9999) - (b.first_arrival ?? 9999));
 
