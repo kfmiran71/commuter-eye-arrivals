@@ -253,6 +253,45 @@ const first_arrival = sorted[0] ?? 9999;
     });
   }
 });
+app.post("/push-arrivals", async (req, res) => {
+  try {
+    const arrivals = req.body;
+
+    const GLIDE_API_URL = "https://api.glideapp.io/api/function/mutateTables";
+    const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
+
+    const rows = arrivals.map(a => ({
+      platform_id: a.platform_id,
+      station: a.station,
+      direction: a.direction,
+      route: a.route,
+      times: a.times
+    }));
+
+    await fetch(GLIDE_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${GLIDE_API_KEY}`
+      },
+      body: JSON.stringify({
+        appID: "YOUR_APP_ID",
+        mutations: [
+          {
+            kind: "add-row",
+            tableName: "Live Arrivals",
+            rows: rows
+          }
+        ]
+      })
+    });
+
+    res.json({ success: true });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
