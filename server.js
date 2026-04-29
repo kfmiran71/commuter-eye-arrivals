@@ -194,6 +194,62 @@ res.json({
   });
 }
 });
+app.get("/arrivals-flat", async (req, res) => {
+  try {
+    const stopId = req.query.stop;
+    const selectedRoute = req.query.route;
+    const directionCode = stopId.slice(-1);
+    const direction = directionCode === "N" ? "Uptown" : "Downtown";
+
+    if (!stopId) {
+      return res.status(400).json({ error: "Missing stop parameter" });
+    }
+
+    const feeds = await fetchFeeds();
+
+    let arrivals = [];
+
+    for (const feed of feeds) {
+      arrivals = arrivals.concat(extractArrivals(feed, stopId));
+    }
+
+    const grouped = {};
+
+    for (const a of arrivals) {
+      if (selectedRoute && a.route !== selectedRoute) continue;
+
+      if (!grouped[a.route]) {
+        grouped[a.route] = [];
+      }
+
+      grouped[a.route].push(a.time);
+    }
+
+    const stationName = STATION_NAMES[stopId] || stopId;
+
+    const flat = Object.entries(grouped).map(([route, times]) => {
+      const cleaned = (times || [])
+        .sort((a, b) => a - b)
+        .slice(0, 3)
+        .map(t => t === 0 ? "Now" : t + " min");
+
+      return {
+        platform_id: stopId,
+        station: stationName,
+        direction,
+        route,
+        route_icon: `${getBullet(route)} ${route}`,
+        times: cleaned.join(" · ")
+      };
+    });
+
+    res.json(flat);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
