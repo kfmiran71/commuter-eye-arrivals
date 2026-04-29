@@ -234,12 +234,13 @@ app.get("/arrivals-flat", async (req, res) => {
       .slice(0, 3);
 
     const cleaned = sorted.map(t => t === 0 ? "Now" : t + " min");
-
+const first_arrival = sorted[0] ?? 9999;
    return {
   platform_id: stopId,
   station: stationName,
   direction,
   route,
+  first_arrival,
   times: cleaned.join(" · ")
 };
   })
