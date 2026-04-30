@@ -42,9 +42,28 @@ function getMinutesUntil(timestamp) {
 async function fetchFeeds() {
   const feeds = [];
 
-  for (const url of FEEDS) {
+  const responses = await Promise.allSettled(
+  FEEDS.map(url =>
+    fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "*/*"
+      }
+    })
+  )
+);
+
+for (const res of responses) {
+  if (res.status !== "fulfilled") continue;
+
   try {
-    const response = await fetch(url, {
+    const buffer = Buffer.from(await res.value.arrayBuffer());
+    const feed = GtfsRealtimeBindings.transit_realtime.FeedMessage.decode(buffer);
+    feeds.push(feed);
+  } catch (err) {
+    console.log("⚠️ Skipping bad feed");
+  }
+}
       headers: {
         "User-Agent": "Mozilla/5.0",
         "Accept": "*/*"
@@ -226,13 +245,19 @@ const first_arrival = sorted[0] ?? 9999;
 app.post("/push-arrivals", async (req, res) => {
   try {
     const stopId = req.query.stop;
-
+if (!stopId) {
+  return res.status(400).json({ error: "Missing stopId" });
+}
 const baseUrl = `${req.protocol}://${req.get("host")}`;
 
 const response = await fetch(
   `${baseUrl}/arrivals?stop=${stopId}`
 );
-
+if (!response.ok) {
+  const text = await response.text();
+  console.log("ARRIVALS ERROR:", text);
+  return res.status(500).json({ error: "Arrivals fetch failed" });
+}
 const arrivals = await response.json();
 console.log("ARRIVALS DATA:", arrivals);
     const GLIDE_API_URL = "https://api.glideapp.io/api/function/mutateTables";
