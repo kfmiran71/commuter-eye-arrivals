@@ -66,16 +66,8 @@ for (const res of responses) {
 }
      
 
-    const buffer = Buffer.from(await response.arrayBuffer());
+    
 
-    const feed = GtfsRealtimeBindings.transit_realtime.FeedMessage.decode(buffer);
-
-    feeds.push(feed);
-
-  } catch (err) {
-    console.log("⚠️ Skipping bad feed:", url);
-  }
-}
 
   return feeds;
 }
@@ -156,9 +148,7 @@ const baseStation = stopId.slice(0, -1);
 
     
 for (const route in grouped) {
-  const times = grouped[route].sort((a, b) => a - b);
-
-  const sorted = times.sort((a, b) => a - b);
+  const sorted = grouped[route].sort((a, b) => a - b);
 const final = sorted.slice(0, 3);
   
 
