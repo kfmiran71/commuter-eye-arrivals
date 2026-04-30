@@ -156,14 +156,19 @@ const final = sorted.slice(0, 3);
 }
 
     const stationName = STATION_NAMES[stopId] || stopId;
+const result = Object.entries(grouped).map(([route, times]) => {
+  const cleaned = times.map(t => t === 0 ? "Now" : t + " min");
 
+  return {
+    platform_id: stopId,
+    station: stationName,
+    direction,
+    route,
+    times: cleaned.join(" • ")
+  };
+});
 
-
-
-
-
-
-
+return res.json(result);
   } catch (err) {
   res.status(500).json({
     error: err.message
