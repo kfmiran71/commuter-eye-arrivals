@@ -153,41 +153,12 @@ const final = sorted.slice(0, 3);
     const stationName = STATION_NAMES[stopId] || stopId;
 
 
-const routeId = req.query.route;
-
-const times = (grouped[routeId] || [])
-  .sort((a, b) => a - b)
-  .slice(0, 3);
-
-const cleaned = times.map(t => t === 0 ? "Now" : t + " min");
-
-const result = {
-  route: routeId,
-  time1: cleaned[0] || null,
-  time2: cleaned[1] || null,
-  time3: cleaned[2] || null,
-  times_text: cleaned.join(" • ")
-};
 
 
 
 
-res.json({
-  platform_id: stopId,
-  station: stationName,
-  direction,
-  trains: Object.entries(grouped).map(([route, times]) => {
-    const cleaned = (times || [])
-      .sort((a, b) => a - b)
-      .slice(0, 3)
-      .map(t => t === 0 ? "Now" : t + " min");
 
-    return {
-      route,
-      times: cleaned
-    };
-  })
-});
+
   } catch (err) {
   res.status(500).json({
     error: err.message
@@ -216,8 +187,7 @@ app.get("/arrivals-flat", async (req, res) => {
     const grouped = {};
 
     for (const a of arrivals) {
-      if (selectedRoute && a.route !== selectedRoute) continue;
-
+     
       if (!grouped[a.route]) {
         grouped[a.route] = [];
       }
