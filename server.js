@@ -225,7 +225,15 @@ const first_arrival = sorted[0] ?? 9999;
 });
 app.post("/push-arrivals", async (req, res) => {
   try {
-    const arrivals = req.body;
+    const stopId = req.query.stop;
+
+const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+const response = await fetch(
+  `${baseUrl}/arrivals?stop=${stopId}`
+);
+
+const arrivals = await response.json();
 
     const GLIDE_API_URL = "https://api.glideapp.io/api/function/mutateTables";
     const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
@@ -249,7 +257,7 @@ app.post("/push-arrivals", async (req, res) => {
         mutations: [
           {
             kind: "add-row",
-            tableName: "Live Arrivals",
+            tableName: "Arrivals",
             rows: rows
           }
         ]
