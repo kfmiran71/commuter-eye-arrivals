@@ -246,25 +246,27 @@ const arrivals = await response.json();
       times: a.times
     }));
 
-    await fetch(GLIDE_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${GLIDE_API_KEY}`
-      },
-      body: JSON.stringify({
-        appID: "YOUR_APP_ID",
-        mutations: [
-          {
-            kind: "add-row",
-            tableName: "Arrivals",
-            rows: rows
-          }
-        ]
-      })
-    });
+    const glideRes = await fetch(GLIDE_API_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${GLIDE_API_KEY}`
+  },
+  body: JSON.stringify({
+    appID: process.env.GLIDE_APP_ID,
+    mutations: [
+      {
+        kind: "add-row",
+        tableName: "Arrivals",
+        rows: rows
+      }
+    ]
+  })
+});
 
-    res.json({ success: true });
+await glideRes.text();
+
+    return res.json({ success: true });
 
   } catch (err) {
     res.status(500).json({ error: err.message });
