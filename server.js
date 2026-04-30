@@ -234,7 +234,7 @@ const response = await fetch(
 );
 
 const arrivals = await response.json();
-
+console.log("ARRIVALS DATA:", arrivals);
     const GLIDE_API_URL = "https://api.glideapp.io/api/function/mutateTables";
     const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
 
