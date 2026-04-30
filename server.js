@@ -171,7 +171,11 @@ const final = sorted.slice(0, 3);
      times: cleaned.join(" • ")
    };
  });
- result.sort((a, b) => a.first_arrival - b.first_arrival);
+ result.sort((a, b) => {
+  if (a.first_arrival == null) return 1;
+  if (b.first_arrival == null) return -1;
+  return a.first_arrival - b.first_arrival;
+});
 const final = result.map(({ first_arrival, ...rest }) => rest);
 return res.json(final);
 
