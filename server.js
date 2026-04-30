@@ -64,11 +64,7 @@ for (const res of responses) {
     console.log("⚠️ Skipping bad feed");
   }
 }
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        "Accept": "*/*"
-      }
-    });
+     
 
     const buffer = Buffer.from(await response.arrayBuffer());
 
