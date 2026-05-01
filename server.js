@@ -32,13 +32,6 @@ const FEEDS = [
   "https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/nyct%2Fgtfs-g",
 ];
 
-
-function getMinutesUntil(timestamp) {
-  const now = Date.now();
-  const arrival = timestamp * 1000;
-  return Math.round((arrival - now) / 60000);
-}
-
 async function fetchFeeds() {
   const feeds = [];
 
@@ -87,11 +80,14 @@ function extractArrivals(feed, stopId, direction) {
 
         if (!time) continue;
 
-        const minutes = getMinutesUntil(time);
+       const arrivalTime = new Date(time * 1000);
 
-        if (minutes > 0) {
-          arrivals.push({ route, time: minutes });         
-        }
+if (arrivalTime > new Date()) {
+  arrivals.push({
+    route,
+    arrival_time: arrivalTime.toISOString()
+  });
+}
       }
     }
   }
@@ -100,8 +96,10 @@ function extractArrivals(feed, stopId, direction) {
   const unique = [];
   const seen = new Set();
 
-  for (const a of arrivals.sort((a, b) => a.time - b.time)) {
-    const key = `${a.route}-${a.time}`;
+  for (const a of arrivals.sort((a, b) =>
+  new Date(a.arrival_time) - new Date(b.arrival_time)
+)) {
+    const key = `${a.route}-${a.arrival_time}`;
     if (!seen.has(key)) {
       seen.add(key);
       unique.push(a);
@@ -131,54 +129,23 @@ const baseStation = stopId.slice(0, -1);
     for (const feed of feeds) {
       arrivals = arrivals.concat(extractArrivals(feed, stopId));
     }
+arrivals.sort((a, b) =>
+  new Date(a.arrival_time) - new Date(b.arrival_time)
+);
 
-    
-    const grouped = {};
-   for (const a of arrivals) {
+const stationName = STATION_NAMES[stopId] || stopId;
 
-  
-  if (selectedRoute && a.route !== selectedRoute) continue;
+const final = arrivals.map(a => ({
+  platform_id: stopId,
+  station: stationName,
+  direction,
+  route: a.route,
+  arrival_time: a.arrival_time
+}));
 
-  if (!grouped[a.route]) {
-    grouped[a.route] = [];
-  }
-
-  grouped[a.route].push(a.time);
-}
-
-    
-for (const route in grouped) {
-  const sorted = grouped[route].sort((a, b) => a - b);
-const final = sorted.slice(0, 3);
-  
-
-  grouped[route] = final;
-}
-
-    const stationName = STATION_NAMES[stopId] || stopId;
- const result = Object.entries(grouped).map(([route, times]) => {
-   const sortedTimes = times.sort((a, b) => a - b);
-   const first_arrival = sortedTimes[0] ?? 9999;
-
-   const cleaned = sortedTimes.map(t => t === 0 ? "Now" : t + " min");
-
-   return {
-     platform_id: stopId,
-     station: stationName,
-     direction,
-     route,
-     first_arrival,
-     times: cleaned.join(" • ")
-   };
- });
- result.sort((a, b) => {
-  if (a.first_arrival == null) return 1;
-  if (b.first_arrival == null) return -1;
-  return a.first_arrival - b.first_arrival;
-});
-const final = result.map(({ first_arrival, ...rest }) => rest);
 return res.json(final);
-
+    
+ 
   } catch (err) {
   res.status(500).json({
     error: err.message
