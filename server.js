@@ -218,21 +218,21 @@ app.get("/arrivals-flat", async (req, res) => {
     const stationName = STATION_NAMES[stopId] || stopId;
 
     const flat = Object.entries(grouped)
-  .map(([route, times]) => {
+  .flatMap(([route, times]) => {
     const sorted = (times || [])
       .sort((a, b) => a - b)
       .slice(0, 3);
 
     const cleaned = sorted.map(t => t === 0 ? "Now" : t + " min");
 const first_arrival = sorted[0] ?? 9999;
-   return {
+   return cleaned.map(time => ({
   platform_id: stopId,
   station: stationName,
   direction,
   route,
   first_arrival,
-  times: cleaned.join(" · ")
-};
+  time
+}));
   })
   .sort((a, b) => (a.first_arrival ?? 9999) - (b.first_arrival ?? 9999));
 
