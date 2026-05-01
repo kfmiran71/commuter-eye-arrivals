@@ -241,7 +241,7 @@ console.log("ARRIVALS DATA:", arrivals);
     appID: process.env.GLIDE_APP_ID,
     mutations: [
       {
-        kind: "add-row",
+        kind: "add-row-to-table",
         tableName: "Arrivals",
         columnValues: {
           "Platform ID": "TEST123",
