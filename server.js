@@ -210,7 +210,7 @@ const first_arrival = sorted[0] ?? 9999;
     });
   }
 });
-app.post("/push-arrivals", async (req, res) => {
+app.get("/push-arrivals", async (req, res) => {
   try {
     const stopId = req.query.stop;
 if (!stopId) {
