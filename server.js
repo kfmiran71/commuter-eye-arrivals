@@ -263,9 +263,16 @@ console.log("ARRIVALS DATA:", arrivals);
   })
 });
 
-await glideRes.text();
+const glideText = await glideRes.text();
 
-    return res.json({ success: true });
+console.log("GLIDE STATUS:", glideRes.status);
+console.log("GLIDE RESPONSE:", glideText);
+
+return res.json({
+  success: glideRes.ok,
+  glide_status: glideRes.status,
+  glide_response: glideText
+});
 
   } catch (err) {
     res.status(500).json({ error: err.message });
