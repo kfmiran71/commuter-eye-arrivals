@@ -249,10 +249,16 @@ console.log("ARRIVALS DATA:", arrivals);
     appID: process.env.GLIDE_APP_ID,
     mutations: [
       {
-        kind: "add-row",
-        tableName: "Arrivals",
-        rows: rows
-      }
+  kind: "set-columns-in-row",
+  tableName: "Arrivals",
+  columnValues: {
+    "Platform ID": rows[0].platform_id,
+    "Route": rows[0].route,
+    "Times": rows[0].times,
+    "Station": rows[0].station,
+    "Direction": rows[0].direction
+  }
+}
     ]
   })
 });
