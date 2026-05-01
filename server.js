@@ -231,14 +231,6 @@ console.log("ARRIVALS DATA:", arrivals);
     const GLIDE_API_URL = "https://api.glideapp.io/api/function/mutateTables";
     const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
 
-    const rows = arrivals.map(a => ({
-  platform_id: a.platform_id,
-  station: a.station,
-  direction: a.direction,
-  route: a.route,
-  arrival_time: a.arrival_time
-}));
-
     const glideRes = await fetch(GLIDE_API_URL, {
   method: "POST",
   headers: {
@@ -249,20 +241,19 @@ console.log("ARRIVALS DATA:", arrivals);
     appID: process.env.GLIDE_APP_ID,
     mutations: [
       {
-  kind: "add-row",
-  tableName: "Arrivals",
-  columnValues: {
-  platform_id: rows[0].platform_id,
-  route: rows[0].route,
-  times: rows[0].times,
-  station: rows[0].station,
-  direction: rows[0].direction
-}
-}
+        kind: "add-row",
+        tableName: "Arrivals",
+        columnValues: {
+          "Platform ID": "TEST123",
+          "Route": "A",
+          "Times": "5 min",
+          "Station": "Test Station",
+          "Direction": "Uptown"
+        }
+      }
     ]
   })
 });
-
 const glideText = await glideRes.text();
 
 console.log("GLIDE STATUS:", glideRes.status);
