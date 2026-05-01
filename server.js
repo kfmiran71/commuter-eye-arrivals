@@ -232,12 +232,12 @@ console.log("ARRIVALS DATA:", arrivals);
     const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
 
     const rows = arrivals.map(a => ({
-      platform_id: a.platform_id,
-      station: a.station,
-      direction: a.direction,
-      route: a.route,
-      times: a.times
-    }));
+  platform_id: a.platform_id,
+  station: a.station,
+  direction: a.direction,
+  route: a.route,
+  arrival_time: a.arrival_time
+}));
 
     const glideRes = await fetch(GLIDE_API_URL, {
   method: "POST",
