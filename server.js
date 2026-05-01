@@ -252,12 +252,12 @@ console.log("ARRIVALS DATA:", arrivals);
   kind: "add-row",
   tableName: "Arrivals",
   columnValues: {
-    "Platform ID": rows[0].platform_id,
-    "Route": rows[0].route,
-    "Times": rows[0].times,
-    "Station": rows[0].station,
-    "Direction": rows[0].direction
-  }
+  platform_id: rows[0].platform_id,
+  route: rows[0].route,
+  times: rows[0].times,
+  station: rows[0].station,
+  direction: rows[0].direction
+}
 }
     ]
   })
