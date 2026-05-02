@@ -237,18 +237,17 @@ console.log("ARRIVALS DATA:", arrivals);
   "Content-Type": "application/json"
 },
   body: JSON.stringify({
-    appID: process.env.GLIDE_APP_ID,
-    mutations: [
-      {
-  kind: "add-row",
-  tableName: "native-table-d3UgJzNMFLdWdcIIc8AP",
-  columnValues: {
-  "Name": "TEST123"
-}
-}
-    ]
-  })
-});
+  appID: process.env.GLIDE_APP_ID,
+  mutations: [
+    {
+      kind: "add-row-to-table",
+      tableName: "Arrivals",
+      columnValues: {
+        "Platform ID": "TEST123"
+      }
+    }
+  ]
+})
 const glideText = await glideRes.text();
 
 console.log("GLIDE STATUS:", glideRes.status);
