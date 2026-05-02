@@ -264,6 +264,44 @@ return res.json({
     res.status(500).json({ error: err.message });
   }
 });
+app.get("/glide-test", async (req, res) => {
+  try {
+    const response = await fetch(
+      `https://api.glideapp.io/api/function/mutateTables?apiKey=${process.env.GLIDE_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          appID: process.env.GLIDE_APP_ID,
+          mutations: [
+            {
+              kind: "add-row",
+              tableName: "Arrivals",
+              columnValues: {
+                "Name": "TEST123"
+              }
+            }
+          ]
+        })
+      }
+    );
+
+    const text = await response.text();
+
+    return res.json({
+      status: response.status,
+      ok: response.ok,
+      response: text
+    });
+
+  } catch (err) {
+    return res.json({
+      error: err.message
+    });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
