@@ -231,23 +231,28 @@ console.log("ARRIVALS DATA:", arrivals);
     const GLIDE_API_URL = `https://api.glideapp.io/api/function/mutateTables?apiKey=${process.env.GLIDE_API_KEY}`;
     const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
 
-    const glideRes = await fetch(GLIDE_API_URL, {
-  method: "POST",
-  headers: {
-  "Content-Type": "application/json"
-},
-  body: JSON.stringify({
-  appID: process.env.GLIDE_APP_ID,
-  mutations: [
-    {
-      kind: "add-row-to-table",
-      tableName: "Arrivals",
-      columnValues: {
-        "Platform ID": "TEST123"
-      }
-    }
-  ]
-});
+    const glideRes = await fetch(
+  "https://api.glideapp.io/api/function/mutateTables",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.GLIDE_API_KEY}`
+    },
+    body: JSON.stringify({
+      appID: process.env.GLIDE_APP_ID,
+      mutations: [
+        {
+          kind: "add-row-to-table",
+          tableName: "Arrivals",
+          columnValues: {
+            "Platform ID": "TEST123"
+          }
+        }
+      ]
+    })
+  }
+);
 const glideText = await glideRes.text();
 
 console.log("GLIDE STATUS:", glideRes.status);
