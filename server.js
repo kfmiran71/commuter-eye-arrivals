@@ -247,7 +247,7 @@ console.log("ARRIVALS DATA:", arrivals);
       }
     }
   ]
-})
+});
 const glideText = await glideRes.text();
 
 console.log("GLIDE STATUS:", glideRes.status);
