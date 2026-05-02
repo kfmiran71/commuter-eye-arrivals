@@ -267,26 +267,23 @@ return res.json({
 app.get("/glide-test", async (req, res) => {
   try {
     const response = await fetch(
-      `https://api.glideapp.io/api/function/mutateTables?apiKey=${process.env.GLIDE_API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          appID: process.env.GLIDE_APP_ID,
-          mutations: [
-            {
-              kind: "add-row",
-              tableName: "Arrivals",
-              columnValues: {
-                "Name": "TEST123"
-              }
-            }
-          ]
-        })
-      }
-    );
+  `https://api.glideapps.com/tables/${process.env.GLIDE_APP_ID}/rows`,
+  {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.GLIDE_API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
+      rows: [
+        {
+          Name: "TEST123"
+        }
+      ]
+    })
+  }
+);
 
     const text = await response.text();
 
