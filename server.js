@@ -233,28 +233,29 @@ console.log("ARRIVALS DATA:", arrivals);
 
   
 
-   const glideRes = await fetch(
-  "https://api.glideapp.io/api/function/mutateTables",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.GLIDE_API_KEY}`
-    },
-    body: JSON.stringify({
-      appID: process.env.GLIDE_APP_ID,
-      mutations: [
-        {
-          kind: "add-row-to-table",
-          tableName: "native-table-d3UgJzNMFLdWdcIIc8AP",
-          columnValues: {
-            "Name": "TEST123"
-          }
+   const glideRes = await fetch("https://api.glideapp.io/api/function/mutateTables", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${process.env.d25737fc-2ba6-4dfa-bcc1-0b1150680e14}`
+  },
+  body: JSON.stringify({
+    appID: process.env.GLIDE_APP_ID,
+    mutations: [
+      {
+        kind: "add-row-to-table",
+        tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
+        columnValues: {
+          "Platform ID": "TEST123",
+          "wuIO9": "A",
+          "58c8P": "5 min",
+          "jQXCB": "Test Station",
+          "Qfui6": "Uptown"
         }
-      ]
-    })
-  }
-);
+      }
+    ]
+  })
+});
 const glideText = await glideRes.text();
 
 console.log("GLIDE STATUS:", glideRes.status);
