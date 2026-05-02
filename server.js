@@ -241,7 +241,7 @@ console.log("ARRIVALS DATA:", arrivals);
     mutations: [
       {
   kind: "add-row",
-  tableName: "Arrivals",
+  tableName: "native-table-d3UgJzNMFLdWdcIIc8AP",
   columnValues: {
   "Name": "TEST123"
 }
