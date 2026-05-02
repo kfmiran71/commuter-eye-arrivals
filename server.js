@@ -242,7 +242,7 @@ console.log("ARRIVALS DATA:", arrivals);
     mutations: [
       {
         kind: "add-row-to-table",
-        tableName: "Arrivals",
+        tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
         columnValues: {
           "Platform ID": "TEST123",
           "Route": "A",
