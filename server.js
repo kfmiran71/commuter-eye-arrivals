@@ -241,16 +241,18 @@ console.log("ARRIVALS DATA:", arrivals);
     appID: process.env.GLIDE_APP_ID,
     mutations: [
       {
-        kind: "add-row-to-table",
-        tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
-        columnValues: {
-          "Platform ID": "TEST123",
-          "Route": "A",
-          "Times": "5 min",
-          "Station": "Test Station",
-          "Direction": "Uptown"
-        }
-      }
+  kind: "add-row-to-table",
+  tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
+  rows: [
+    {
+      "Name": "TEST123",
+      "wuIO9": "A",
+      "58c8P": "5 min",
+      "jQXCB": "Test Station",
+      "Qfui6": "Uptown"
+    }
+  ]
+}
     ]
   })
 });
