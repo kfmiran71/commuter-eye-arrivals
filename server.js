@@ -231,15 +231,7 @@ console.log("ARRIVALS DATA:", arrivals);
     const GLIDE_API_URL = `https://api.glideapp.io/api/function/mutateTables?apiKey=${process.env.GLIDE_API_KEY}`;
     const GLIDE_API_KEY = process.env.GLIDE_API_KEY;
 
-    const glideRes = await fetch(
-  "https://api.glideapp.io/api/function/mutateTables",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.GLIDE_API_KEY}`
-
-    },
+  
 
     const glideRes = await fetch(
   "https://api.glideapp.io/api/function/mutateTables",
