@@ -233,7 +233,7 @@ console.log("ARRIVALS DATA:", arrivals);
 
   
 
-    const glideRes = await fetch(
+   const glideRes = await fetch(
   "https://api.glideapp.io/api/function/mutateTables",
   {
     method: "POST",
@@ -246,9 +246,9 @@ console.log("ARRIVALS DATA:", arrivals);
       mutations: [
         {
           kind: "add-row-to-table",
-          tableName: "Arrivals",
+          tableName: "native-table-d3UgJzNMFLdWdcIIc8AP",
           columnValues: {
-            "Platform ID": "TEST123"
+            "Name": "TEST123"
           }
         }
       ]
