@@ -244,14 +244,10 @@ console.log("ARRIVALS DATA:", arrivals);
   kind: "add-row-to-table",
   tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
   rows: [
-    {
-      "Name": "TEST123",
-      "wuIO9": "A",
-      "58c8P": "5 min",
-      "jQXCB": "Test Station",
-      "Qfui6": "Uptown"
-    }
-  ]
+  {
+    "Name": "TEST123"
+  }
+]
 }
     ]
   })
