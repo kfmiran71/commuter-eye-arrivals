@@ -271,17 +271,21 @@ app.get("/glide-test", async (req, res) => {
   {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${process.env.GLIDE_API_KEY}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.GLIDE_API_KEY}`
     },
     body: JSON.stringify({
       appID: process.env.GLIDE_APP_ID,
       mutations: [
         {
           kind: "add-row-to-table",
-          tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
+          tableName: "Arrivals",
           columnValues: {
-            "Name": "TEST123"
+            "Platform ID": "TEST123",
+            "Route": "A",
+            "Times": "5 min",
+            "Station": "Test Station",
+            "Direction": "Uptown"
           }
         }
       ]
