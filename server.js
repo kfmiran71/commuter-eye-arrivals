@@ -238,16 +238,14 @@ console.log("ARRIVALS DATA:", arrivals);
     "Authorization": `Bearer ${GLIDE_API_KEY}`
   },
   body: JSON.stringify({
-    appId: process.env.GLIDE_APP_ID,
+    appID: process.env.GLIDE_APP_ID,
     mutations: [
       {
-  kind: "add-row-to-table",
+  kind: "add-row",
   tableName: "native-table-d3UgjzNMFLdWdcIIc8AP",
-  rows: [
-  {
-    "Name": "TEST123"
-  }
-]
+  columnValues: {
+  "Name": "TEST123"
+}
 }
     ]
   })
